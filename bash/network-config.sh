@@ -31,12 +31,18 @@
 # this command is ugly done this way, so generating the output data into variables is recommended to make the script more readable.
 # e.g. 
 #   interface_name=$(ip a |awk '/: e/{gsub(/:/,"");print $2}')
-
+myhostname=$(hostname)
+interface=$(ip a |awk '/: e/{gsub(/:/,"");print $2}')
+lanipaddress=$(ip a s $interface|awk '/inet /{gsub(/\/.*/,"");print $2}')
+lanname=$(getent hosts $lanipaddress | awk '{print $2}')
+routeraddress=$(ip route |grep default | cut -d ' ' -f 3)
+externalip=$(curl -s icanhazip.com)
+externalname=$(getent hosts $externalip | awk '{print $2}')
 cat <<EOF
-Hostname        : $(hostname)
-LAN Address     : $(ip a s $(ip a |awk '/: e/{gsub(/:/,"");print $2}')|awk '/inet /{gsub(/\/.*/,"");print $2}')
-LAN Hostname    : $(getent hosts $(ip a s $(ip a |awk '/: e/{gsub(/:/,"");print $2}'))|awk '/inet /{gsub(/\/.*/,"");print $2}' | awk '{print $2}')
-External IP     : $(curl -s icanhazip.com)
-External Name   : $(getent hosts $(curl -s icanhazip.com) | awk '{print $2}')
+Hostname        : $myhostname
+LAN Address     : $lanipaddress
+LAN Hostname    : $lanname
+External IP     : $external
+External Name   : $externalname
+router Address  : $routeraddress
 EOF
-
