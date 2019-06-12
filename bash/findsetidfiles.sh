@@ -21,5 +21,5 @@ echo ""
 
 echo "largest files "
 echo "============="
-find /home/ -type f -exec ls -alh --block-size=M {} \; | sort -hr -k5 | head -n 10 | awk '{print $5, $3, $9}'
+find ~/ -type f -exec ls -alh --block-size=M {} \; | sort -hr -k5 | head -n 10 | awk '{print $5, $3, $9}'
 echo ""
