@@ -12,26 +12,19 @@
 ###############
 # Variables   #
 ###############
-title=$(hostname)
-name="$USER"
-date=$(date +'%I:%M %p')
+name="Enter your name:"
+read -p "$name" myname
+
+title="Enter saluation:"
+read -p "$title" Title
 hostname=$(hostname)
-weekday=$(date +%u)
+
 
 ###############
 # Main        #
 ###############
-File=$(cat <<EOF
-"Welcome to ravinder's $hostname, "$title $name!""
-$(if [ "$weekday" = "6" ] || [ "$weekday" = "7" ]
-then
-    echo "It is $date on Weekend."
-else
-    echo "It is $date on Weekday."
-fi)
-EOF
-)
 
-cat <<EOF
-$(cowsay $File)
-EOF
+echo "Welcome to planet $hostname, "$Title $myname!" "  | cowsay
+
+#Date
+date +'%I:%M %p %A'

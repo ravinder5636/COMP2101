@@ -31,18 +31,32 @@
 # this command is ugly done this way, so generating the output data into variables is recommended to make the script more readable.
 # e.g.
 #   interface_name=$(ip a |awk '/: e/{gsub(/:/,"");print $2}')
+
+#Vaiables and data gathering
+#============================
 myhostname=$(hostname)
-interface=$(ip a |awk '/: e/{gsub(/:/,"");print $2}')
-lanipaddress=$(ip a s $interface|awk '/inet /{gsub(/\/.*/,"");print $2}')
-lanname=$(getent hosts $lanipaddress | awk '{print $2}')
-routeraddress=$(ip route |grep default | cut -d ' ' -f 3)
+interfacename=$(ip a |awk '/: e/{gsub(/:/,"");print $2}')
+lanipaddress=$(ip a s $interfacename|awk '/inet /{gsub(/\/.*/,"");print $2}')
+lanhostname=$(getent hosts $lanipaddress | awk '{print $2}')
 externalip=$(curl -s icanhazip.com)
-externalname=$(getent hosts $externalip | awk '{print $2}')
+#externalname=$(getent hosts $externalip | awk '{print $2}')
+#externalname=$(getent hosts $(curl -s icanhazip.com) | awk '{print $2}')
+routeraddress=$(ip route | grep 'default'| awk '{print $3}')
+routerhostname=$(getent hosts $routeraddress | awk '{print $2}')
+networknumber=$(route -n |awk '/255.255.255.0/''{print $1}')
+networkname=$(getent networks $networknumber | awk '{print $1}')
+#============================
+
+#Report generation
+#==================
 cat <<EOF
 Hostname        : $myhostname
 LAN Address     : $lanipaddress
-LAN Hostname    : $lanname
+LAN Hostname    : $lanhostname
 External IP     : $externalip
-External Name   : $externalname
-router Address  : $routeraddress
+Router Address  : $routeraddress
+Router Hostname : $routerhostname
+Network Number  : $networknumber
+Network Name    : $networkname
 EOF
+#===================
