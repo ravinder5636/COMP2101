@@ -59,4 +59,3 @@ Router Hostname : $routerhostname
 Network Number  : $networknumber
 Network Name    : $networkname
 EOF
-#===================

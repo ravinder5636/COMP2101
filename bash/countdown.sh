@@ -6,13 +6,17 @@
 #       reset the count to the maximum and tell the user they are not allowed to interrupt
 #       the count. If the script receives a QUIT signal, tell the user they found the secret
 #       to getting out of the script and exit immediately.
-trap reset 2
-trap foundsecret 3
-# Task: Explain in a comment how the line with the word moose in it works.
-function foundsecret {
-  echo "you have solution that how to exit from the script."
+
+trap int_reset 2
+trap found_secret 3
+
+function found_secret {
+  echo "You found out the secret to getting out of the script."
   exit
 }
+
+# Task: Explain in a comment how the line with the word moose in it works.
+
 #### Variables
 programName="$(basename $0)" # used by error_functions.sh
 sleepTime=1 # delay used by sleeptime
@@ -24,12 +28,16 @@ numberOfSleeps=10 # how many sleeps to wait for before quitting for inactivity
 # Usage:
 #   error-message ["some text to print to stderr"]
 #
+#
+#THis function is named error-message
+#It will send an error message to stderr
+#It uses the echo command to print the variable programName and the first arguments.
+#It then redirects stdout (1)
+#& is the file descriptor
+#2 is used to denote stderr
+#>&2 redirects stdout from echo command to stderr.
+
 function error-message {
-  #task :  It prints programname and first args
-  # > redirect standard output (implicit 1)
-  # $ what comes next is a file description , not a file (only for a right hand side of > )
-  # 2 stderr file descriptor number
-  # redirect stdout from echo command to stderr
         echo "${programName}: ${1:-Unknown Error - a moose bit my sister once...}" >&2
 }
 
@@ -73,21 +81,23 @@ while [ $# -gt 0 ]; do
 done
 
 if [ ! $numberOfSleeps -gt 0 ]; then
-    error-exit "$numberOfSleeps is not a valid count of sleeps to wait for sign"
+    error-exit "$numberOfSleeps is not a valid count of sleeps to wait for signals"
 fi
 
 if [ ! $sleepTime -gt 0 ]; then
-    error-exit "$sleepTime is not a valid time to sleep while waiting for sign"
+    error-exit "$sleepTime is not a valid time to sleep while waiting for signals"
 fi
 
 sleepCount=$numberOfSleeps
-function reset {
-  echo "can not interrupt the count ."
-  sleepCount=$(($numberOfSleeps+1))
+
+function int_reset {
+  echo "You are not allowed to interrupt the count."
+  sleepCount=$((numberOfSleeps+1))
 }
+
 while [ $sleepCount -gt 0 ]; do
-    echo "Waiting $sleepCount more times...."
+    echo "Waiting $sleepCount more times for signals"
     sleep $sleepTime
     sleepCount=$((sleepCount - 1))
 done
-echo "Waiting time finished, Exit Now"
+echo "Wait counter expired, exiting peacefully"

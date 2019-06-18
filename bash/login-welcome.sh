@@ -15,7 +15,7 @@
 name="Enter your name:"
 read -p "$name" myname
 
-title="Enter saluation:"
+title="Enter title:"
 read -p "$title" Title
 hostname=$(hostname)
 

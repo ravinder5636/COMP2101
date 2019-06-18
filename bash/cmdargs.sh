@@ -16,19 +16,31 @@ while [ $# -gt 0 ]; do
 #             save the debug level in a variable to be available to use later in the script
 #             display an error if the user gave the -d option without a number after it
 # TASK 3: put anything that wasn't recognized on the command line into a variable for use later in the script
+
   echo "Processing '$1'."
-
-  case $1 in
-   "-h") echo "-h is use for help";;
-   "-v") echo "-v is use for Verbose";;
-   "-d ") echo "-d is the debug level"
-
-         [ -z $1 ] && echo "Please Enter Debug Level"
-	 shift;;
-    *)
-          anything=$1
-
-  esac
+case $1 in
+    -h )
+    echo 'You typed in "-h" for help.'
+    ;;
+    -v )
+    echo 'You typed in "-v" for varbose.'
+    ;;
+    -d )
+      case $2 in
+        [1-5] )
+        echo "You typed in -d for debug level $2"
+        shift
+        ;;
+        *)
+        echo "Error : The -d option must be followed by a number in the range [1-5]."
+        shift
+      esac
+    ;;
+  *)
+  error_msg=$1
+  echo "Error: Unknown value $error_msg"
+  ;;
+esac
 
   # each time through the loop, shift the arguments left
   # this decrements the argument count for us
